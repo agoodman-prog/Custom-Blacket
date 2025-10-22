@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pack Game</title>
+</head>
+<body>
+  <h1>Pack Opening Game</h1>
+  <button onclick="openPack()">Open Pack (10 tokens)</button>
+  <p id="tokens"></p>
+  <ul id="inventory"></ul>
+
+  <script>
+    async function updateStatus() {
+      const res = await fetch('http://localhost:3000/status');
+      const data = await res.json();
+      document.getElementById('tokens').innerText = `Tokens: ${data.tokens}`;
+      document.getElementById('inventory').innerHTML = data.inventory.map(i => `<li>${i.name} (${i.rarity})</li>`).join('');
+    }
+
+    async function openPack() {
+      const res = await fetch('http://localhost:3000/open-pack', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      alert(`You got: ${data.item.name} (${data.item.rarity})`);
+      updateStatus();
+    }
+
+    updateStatus();
+  </script>
+</body>
+</html>
